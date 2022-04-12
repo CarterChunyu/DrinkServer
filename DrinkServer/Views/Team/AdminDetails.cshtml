@@ -1,0 +1,69 @@
+﻿@model TeamAdminVM
+@*@{
+        string managemember_url = $"/Team/ManageMembers?teamId={Model.Id}";
+    }
+
+    <label>@Model.Name</label>
+
+    <label>Access</label> <label>Adminstrator</label>
+
+      <div>
+      <h3>Members</h3>
+       @foreach (var item in Model.Users)
+       {
+           string url = $"/User/Details?userId={item.Id}";
+           <label><a href="@url">@item.DisplayName</a></label>
+           <hr />
+       }
+       <a href="@managemember_url">Manage</a>
+       </div>*@
+
+
+<h3 class="mb-3">@Model.Name</h3>
+
+<ul class="nav nav-pills navSections">
+    <li class="nav-item">
+        <a class="nav-link active bg-dark" aria-current="page" asp-controller="Team" asp-action="Details"
+          asp-route-id="@Model.Id" >Details</a>
+    </li>
+    @*<li class="nav-item">
+        <a class="nav-link" href="teams-details-log.html">Log</a>
+    </li>*@
+</ul>
+
+<div class="details bg-warning">
+    <div class="row">
+        <div class="col-sm-2 details__title">Access</div>
+        <div class="col-sm-10 mb-3">
+            <ul>
+                <li>@Model.Name</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="details">
+    <div class="row">
+        <div class="col-sm-2 details__title">Members</div>
+        <div class="col-sm-10 mb-3">
+            <ul class="mb-3">
+                @foreach (var item in Model.Users)
+                {
+                    <li>
+                        <a asp-controller="User" asp-action="Details" asp-route-id="@item.Id"
+                           class="details__link">@item.DisplayName</a>
+                    </li>
+                }
+            </ul>
+            <a asp-action="ManageMembers" asp-controller="Team" asp-route-id="@Model.Id"
+               class="btn btn-primary btn-sm" role="button">Manage</a>
+        </div>
+    </div>
+</div>
+
+<div class="form-group row mt-5">
+    <div class="col">
+        <a asp-controller="Team" asp-action="Index"  
+           class="btn btn-link" role="button">&laquo; Back to Teams</a>
+    </div>
+</div>

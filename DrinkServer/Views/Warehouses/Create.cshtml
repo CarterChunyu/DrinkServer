@@ -1,0 +1,92 @@
+﻿@model TestVM
+
+@{
+
+    ViewData["Title"] = "Create";
+    var s = ViewBag.x as ListViewModel;
+}
+
+
+<h1>Create</h1>
+
+<h4>Warehouse</h4>
+<hr />
+<div id="div1">@await Html.PartialAsync("_ListPartialView", s)</div>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Code" class="control-label"></label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Note" class="control-label"></label>
+                <input asp-for="Note" class="form-control" />
+                <span asp-validation-for="Note" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="LocationId" class="control-label"></label>
+                <select asp-for="LocationId" class="form-control" asp-items="ViewBag.LocationId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateTime" class="control-label"></label>
+                <input asp-for="CreateTime" class="form-control" />
+                <span asp-validation-for="CreateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+
+
+            <div hidden="hidden">
+                <label asp-for="Name1" class="control-label"></label>
+                <input asp-for="Name1" class="form-control" id="input1"/>
+                <span asp-validation-for="Name1" class="text-danger"></span>
+            </div>
+
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts{
+    <script>
+        let div1 = document.getElementById('div1');
+        let checkboxs = div1.getElementsByTagName('input');
+        let mappingTable = document.getElementById('input1');
+        window.onload = function () {
+            console.log(mappingTable);
+            for (var i = 0; i < checkboxs.length; i++) {
+                checkboxs[i].addEventListener('click', function () {
+                    let value = "";
+                    for (var i = 0; i < checkboxs.length; i++) {
+                        let checkbox = checkboxs[i];
+                        if (checkbox.checked) {
+                            if (value != "")
+                                value+=","
+                            value += checkbox.value +"-" +checkbox.name ;
+                        }
+                    }
+                    mappingTable.value = value;
+                    console.log(value);
+                })
+            }
+        }
+    </script>
+}

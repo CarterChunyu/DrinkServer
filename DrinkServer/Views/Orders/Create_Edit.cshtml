@@ -1,0 +1,144 @@
+﻿@model IEnumerable<Order_CreateEdit_ViewModel>
+@inject OrderService os
+
+@{
+    Layout = null;
+}
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/boder.css" rel="stylesheet" />
+    <title>Orders</title>
+</head>
+
+<body class="bgBody">
+
+    <nav class="navbar navbar-expand-md navbar-dark mb-4 bgNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">SNR</a>
+        </div>
+    </nav>
+
+    <main role="main" class="container mb-5">
+
+        <h3 class="mb-3"><span class="badge bg-dark text-light">Step 1 of 2</span> Order</h3>
+
+  
+
+            <div class="ordersLocations">
+                <div class="orLoRow">
+                    <div class="orLoTD orLoTdFrom">
+                        <div class="orLoMeta">From</div>
+                        <div class="orLoEntity">@ViewBag.formToInfo.Split(',')[1]</div>
+                    </div>
+
+                    <div class="orLoTD orLoTdTo">
+                        <div class="orLoMeta">To</div>
+                        <div class="orLoEntity">@ViewBag.formToInfo.Split(',')[2]</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-3">
+
+            <nav class="navbar navbar-expand-sm bg-light orderCategories" role="tablist">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#CategoriesLink" aria-controls="CategoriesLink" aria-expanded="false">
+                        Select Category
+                    </button>
+                    <div class="collapse navbar-collapse" id="CategoriesLink">
+                        <div class="navbar-nav nav nav-pills" role="tablist">
+
+                            @foreach (var item in ViewBag.Categories)
+                            {
+                                <button id="chose" data-bs-toggle="pill" type="button" role="tab" class="nav-link " data-bs-target="#Category_@item.Id" aria-selected="true">@item.Name</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <div class="tab-content">
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <div class="tab-pane fade show " role="tabpanel" id="Category_@category.Id">
+                        <div class="ordersContainer">
+                            <div class="ocRowTH">
+                                <div class="ocTH">&nbsp;</div>
+                                <div class="ocTH">SKU</div>
+                                <div class="ocTH">Name</div>
+                                <div class="ocTH text-center">Last Order</div>
+                                <div class="ocTH text-center">QTY</div>
+                            </div>
+
+                            @foreach (var item in Model.Where(m => m.Category == category.Name).ToList())
+                            {
+                                <div class="ocRowTD">
+                                    <div class="ocTD occTN"><img src="/Images/@item.Picture" class="rounded occTNimg" alt=""></div>
+                                    <div class="ocTD ocTdSKU">@item.Sku</div>
+                                    <div class="ocTD ocTdName">
+                                        @item.EnglishName
+                                        <br>@item.ChineseName
+                                    </div>
+                                    <div class="ocTD ocTdLastQTY">@os.Getnumber(item.Id)</div>
+                                    <div class="ocTD ocTdQTY">
+                                        <input type="number" class="form-control text-center input-qty" value="0" id="@item.Id" category="@item.Category" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="form-group row mt-5">
+                <div class="col">
+                    <div class="form-group row mt-5">
+                        <div class="col">
+                            <form action="/Orders/Create_Edit" method="post" id="myForm">
+                                <a asp-action="Index" class="btn btn-link me-3" role="button">Cancel</a>
+
+                                <input type="hidden" name="formToInfo" value="@ViewBag.formToInfo" />
+                                <input type="hidden" name="QTYInfo" id="qtyinfo" value="" />
+                                <input type="hidden" name="SelectCategies" id="select-categories" value="" />
+
+                                <input type="submit" name="name" class="btn btn-primary" value="Review &amp; Checkout" />
+
+                            </form>
+                        </div>
+                    </div>
+            </div>
+            </div>
+
+    </main>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script>
+        $(function () {
+            $('.tab-pane').first().addClass('active');
+            $('#chose').addClass('active');
+            $("#myForm").submit(function () {
+                var qtyarray = [];
+                var categoryarray = [];
+                $(".input-qty").each(function () {
+                    if ($(this).val() != "0") {
+                        qtyarray.push(`${$(this).attr("id")}@@${$(this).val()}`);
+                        if (categoryarray.indexOf($(this).attr("category")) == -1) {
+                            categoryarray.push($(this).attr("category"));
+                        }
+                    }
+                    //$(this).attr("id")
+                    //$(this).val()
+                });
+                $("#qtyinfo").val(qtyarray);
+                $("#select-categories").val(categoryarray);
+                console.log(qtyarray);
+            });
+
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+﻿@model User
+@{
+    string url = $"/Login/ProfileEdit?userId={Model.Id}";
+}
+
+@*<label>Email</label>
+    <label>@Model.Email</label>
+
+
+    <label>Team</label>
+    @if (Model.Team == null)
+    {  <label>無</label>  }
+    else
+    {  <label>@Model.Team.Name</label>  }
+
+    <a href="@url">Edit</a>*@
+
+
+<h3 class="mb-3">@Model.DisplayName</h3>
+
+<div class="details">
+    <div class="row">
+        <dl class="col-md-6 col-sm-12">
+            <dt>@Html.DisplayNameFor(model=>model.Email)</dt>
+            <dd>@Html.DisplayFor(model=>model.Email)</dd>
+        </dl>
+        <dl class="col-md-6 col-sm-12">
+            <dt>Team</dt>
+
+             @*If None, Display 無*@ 
+            @if (Model.Team == null)
+            {
+                <dd><span class="badge rounded-pill bg-light text-dark">無</span></dd>
+            }
+            else
+            {
+                <dd><a asp-controller="Team" asp-action="Details" asp-route-id="@Model.Team.Id" 
+                       class="details__link">@Model.Team.Name </a></dd>
+            }     
+        </dl>
+    </div>
+</div>
+
+<div class="form-group row mt-5">
+    <div class="col">
+        <a asp-controller="Login" asp-action="ProfileEdit" asp-route-id="@Model.Id"
+           class="btn btn-primary btn-sm" role="button">Edit</a>
+    </div>
+</div>
+

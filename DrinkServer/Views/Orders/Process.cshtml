@@ -1,0 +1,130 @@
+﻿@model List<IGrouping<string, DrinkServer.Models.OrderDetail>>
+@{
+    
+    int OrderId = ViewBag.OrderId;
+}
+
+@*<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/boder.css" rel="stylesheet" />
+    <title>Process Order</title>
+</head>
+<body class="bgBody">*@
+    <form action="/Orders/Process" method="post">
+        @*<nav class="navbar navbar-expand-md navbar-dark mb-4 bgNav">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">SNR</a>
+            </div>
+        </nav>*@
+
+        <input type="hidden" name="OrderId" value="@OrderId" />
+        <main role="main" class="container mb-5">
+
+            <h3 class="mb-3">Process Order # 156</h3>
+
+            <div class="details">
+
+                <div class="row">
+                    <dl class="col-md-4 col-sm-12">
+                        <dt>From</dt>
+                        <dd>@ViewBag.FromName</dd>
+                    </dl>
+                    <dl class="col-md-4 col-sm-12">
+                        <dt>To</dt>
+                        <dd>@ViewBag.ToName</dd>
+                    </dl>
+                    <dl class="col-md-4 col-sm-12">
+                        <dt>Order Date</dt>
+                        <dd>
+                            2021-11-07 1:07 pm
+                            <br>by Name(userId)
+                        </dd>
+                    </dl>
+                </div>
+
+            </div>
+
+
+            <div class="ordersProcess">
+                <div class="opRow">
+                    <label class="opTH opThWHStatus" for="SelectStatus">Status</label>
+                    <div class="opTD opTdWHStatus">
+                        <select class="form-select form-select-sm my-1" id="SelectStatus" aria-label="Select Status" name="Staus">
+                            <option value="1" selected="">New</option>
+                            <option value="2">Processing</option>
+                            <option value="3">Fulfilled</option>
+                            <option value="4">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="opRow">
+                    <label class="opTH opThWHDD" for="DeliveryDate">Delivery Date</label>
+                    <div class="opTD opTdWHDD"><input type="date" class="form-control form-control-sm my-1" id="DeliveryDate" name="DeliveryDate"></div>
+                </div>
+                Only users that can process this warehouse will see these private notes.
+                <div class="opRow">
+                    <div class="opTH opThWHPrivateNote">
+                        <label class="" for="PrivateNote">Private Note</label>
+                        <div class="opHelpText">Only users that can process this warehouse will see these notes.</div>
+                    </div>
+                    <div class="opTD opTdWHPrivateNote">
+                        <textarea class="form-control form-control-sm" id="PrivateNotes" rows="5" name="Notes"></textarea>
+                    </div>
+                </div>
+            </div>
+
+
+            @foreach (var group in Model)
+            {
+
+                <div class="ocCaption">@group.Key</div>
+
+                <div class="ordersContainer">
+                    <div class="ocRowTH">
+                        <div class="ocTH">&nbsp;</div>
+                        <div class="ocTH">SKU</div>
+                        <div class="ocTH">Name</div>
+                        <div class="ocTH text-center">Last Order</div>
+                        <div class="ocTH text-center">QTY</div>
+                    </div>
+
+                    @foreach (var orderDetail in group)
+                    {
+                        var material = orderDetail.Material;
+
+                        <div class="ocRowTD">
+                            <div class="ocTD occTN"><img src="/Images/@material.Picture" class="rounded occTNimg" alt=""></div>
+                            <div class="ocTD ocTdSKU">@material.Sku</div>
+                            <div class="ocTD ocTdName">
+                                @material.EnglishName
+                                <br>@material.ChineseName
+                            </div>
+                            <div class="ocTD ocTdLastQTY">5</div>
+                            <div class="ocTD ocTdQTY">
+                                @orderDetail.Count
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            }
+
+
+            <div class="form-group row mt-5">
+                <div class="col">
+                    <a asp-action="Index" class="btn btn-link me-3" role="button">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+
+        </main>
+    </form>
+
+    @*<script src="~/js/bootstrap.bundle.min.js"></script>*@
+
+@*</body>
+</html>*@

@@ -1,0 +1,72 @@
+﻿@model  ManageMeberVM
+
+@*<form asp-action="ManageMembers">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Name" />
+
+    <h2>@Model.Name</h2>
+
+    @foreach (var item in Model.UserVMs)
+    {
+        if (!item.Flag)
+        {
+            <input type="checkbox" value="@item.Id" checked="@item.Flag" name="MemberIds" />
+            <label>@item.Name</label>
+        }
+        else
+        {
+            <input type="checkbox" value="@item.Id" checked="@item.Flag" disabled="disabled" />
+            <label>@item.Name</label>
+        }
+    }
+    <input type="submit" value="Save" />
+</form>*@
+
+
+<form asp-action="ManageMembers">
+    <h3 class="mb-3">@Model.Name</h3>
+
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Name" />
+
+    <hr class="my-3">
+    <div class="row g-1 mb-1">
+        <div class="col-sm-2 col-form-label-sm">Select team members</div>
+        <div class="col-sm-10">
+            @for (int i = 0; i < Model.UserVMs.Count; i++)
+            {
+                var item = Model.UserVMs[i];
+                string id = $"Example{i}";
+                if (item.Flag)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="@item.Id" checked="@item.Flag" disabled="disabled"
+                               name="MemberIds" id="@id">
+                        <label class="form__checkLabel" for="@id">
+                            @item.Name
+                        </label>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="@item.Id" checked="@item.Flag" name="MemberIds" id="@id">
+                        <label class="form__checkLabel" for="@id">
+                            @item.Name
+                        </label>
+                    </div>
+                }
+            }
+      
+        </div>
+    </div>
+
+    <div class="form-group row mt-5">
+        <div class="col">
+            <a asp-controller="Team" asp-action="Details" asp-route-id="@Model.Id" 
+               class="btn btn-link me-3" role="button">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+
+</form>

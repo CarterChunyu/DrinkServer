@@ -1,0 +1,90 @@
+﻿@model User
+
+@{
+    ViewData["Title"] = "Details";
+    var editurl = $"/User/Edit/?userId={Model.Id}";
+}
+
+<h3 class="mb-3"></h3>
+
+<ul class="nav nav-pills navSections">
+    <li class="nav-item">
+        <a asp-controller="User" asp-action="Details" asp-route-id="@Model.Id"
+           class="nav-link active bg-dark" aria-current="page">Details</a>
+    </li>
+    @*<li class="nav-item">
+        <a class="nav-link" href="users-details-log.html">Log</a>
+    </li>*@
+</ul>
+
+<div class="details">
+    <div class="row">
+        <dl class="col-md-4 col-sm-12">
+            <dt>@Html.DisplayNameFor(model=>model.Email)</dt>
+            <dd>@Html.DisplayFor(model => model.Email)</dd>
+        </dl>
+
+        <dl class="col-md-3 col-sm-12">
+            <dt>Username</dt>
+            <dd>@Html.DisplayFor(model=>model.DisplayName)</dd>
+        </dl>
+
+        <dl class="col-md-2 col-sm-12">
+            <dt>@Html.DisplayNameFor(model => model.Status)</dt>
+            @if (Model.Status)
+            {
+                <dd>Active</dd>
+            }
+            else
+            {
+                <dd>Disable</dd>
+            }
+        </dl>
+
+        <dl class="col-md-3 col-sm-12">
+            <dt>Team</dt>
+
+            @if (Model.Team == null)
+            {
+                <!-- If None, Display 無 -->
+                <dd><span class="badge rounded-pill bg-light text-dark">無</span></dd>
+            }
+            else
+            {
+                <dd><a asp-controller="Team" asp-action="Details" asp-route-id="@Model.Team.Id"
+                       class="details__link">@Model.Team.Name</a></dd>
+            }
+        </dl>
+    </div>
+</div>
+
+<div class="form-group row mt-5">
+    <div class="col">
+        @*<a href="/User/Index" class="btn btn-link">&laquo; Back to Users</a>*@
+        <a asp-action="Index" asp-route-page="1" asp-route-status="@true">&laquo; Back to Users</a>
+        <a asp-controller="User" asp-action="Edit" asp-route-id="@Model.Id"
+           class="btn btn-primary btn-sm" role="button">Edit</a>
+        <a asp-controller="User" asp-action="ChagePassword" asp-route-id="@Model.Id"
+           class="btn btn-link btn-sm" role="button">Change Password</a>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

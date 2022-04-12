@@ -1,0 +1,213 @@
+﻿@model IEnumerable<MaterialCategory>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor _accessor
+
+@{
+    Layout = null;
+    LoginAuthorizeVM vm = _accessor.HttpContext.Session.GetObject<LoginAuthorizeVM>("User");
+}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/boder.css" rel="stylesheet" />
+    <title>Navigation</title>
+</head>
+
+<body class="bgBody">
+
+    <nav class="navbar navbar-expand-md navbar-dark mb-4 bgNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-action="HomePage" asp-controller="Login">SNR</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @if (vm.LookOrders_Place == true || vm.LookOrders_Proccess == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Orders">Orders</a>
+                        </li>
+                    }
+                    @if (vm.LookInventory)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Inventory
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" asp-action="Materials" asp-controller="Materials">Materials</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Suppliers" asp-controller="Suppliers">Suppliers</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookEntities)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="EntitiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Entities
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="EntitiesDropdown">
+                                <li><a class="dropdown-item" asp-action="Stores" asp-controller="Stores">Stores</a></li>
+                                <li><a class="dropdown-item" asp-action="Warehouses" asp-controller="WarehouseCreateViewModels">Warehouses</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookReports)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reports
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" href="reports/toast.html">Toast</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookSettings)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="SettingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Settings
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="SettingsDropdown">
+                                <li><a class="dropdown-item" asp-action="Profile" asp-controller="Login">My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Login" asp-controller="Login">Logout</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookAdmin)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="AdminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="AdminDropdown">
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="Team">Teams</a></li>
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="User">Users</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main role="main" class="container mb-5">
+        <div class="index indexMaterials">
+
+            <div class="index__filter">
+
+                <ul class="nav flex-column nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#" id="select-all">
+                            All
+                            <span class="badge bg-secondary rounded-pill float-end">@Model.Sum(cate => cate.Materials.Count())</span>
+                        </a>
+                    </li>
+                    @foreach (var category in Model)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link category-select" aria-current="page" href="#" data-id="@category.Id">
+                                @category.Name
+                                <span class="badge bg-secondary rounded-pill float-end">
+                                    @category.Materials.Count()
+                                </span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+            </div><!-- /index__filter -->
+
+            <div class="index__content">
+
+                @foreach (var category in Model)
+                {
+                    <table class="indexTable" id='@($"category{category.Id}")'>
+                        <caption>@category.Name</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col" width="15%">SKU</th>
+                                <th scope="col" width="40%">Name</th>
+                                <th scope="col" width="30%">品名名字</th>
+                                <th scope="col" width="15%">UOM</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            @foreach (var material in category.Materials)
+                            {
+                                <tr>
+                                    <td><a asp-action="Materials_Details" asp-route-id="@material.Id"><strong>@material.Sku</strong></a></td>
+                                    <td>@material.EnglishName</td>
+                                    <td>@material.ChineseName</td>
+                                    <td>@material.Unit</td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                }
+
+                <div class="form-group row mt-5">
+                    <div class="col">
+                        <a asp-action="Materials_Create" class="btn btn-primary me-3" role="button">New Material</a>
+
+                        <a asp-controller="MaterialCategories" asp-action="MaterialCategory" class="btn btn-secondary" role="button">Manage Categories</a>
+                    </div>
+                </div>
+
+            </div><!-- /index__content -->
+
+        </div><!-- /index -->
+
+    </main>
+
+
+</body>
+</html>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(function () {
+        $('.category-select').click(function () {
+            var id = "category" + $(this).attr("data-id");
+
+            $(".indexTable").fadeOut();
+            $("#" + id).fadeIn();
+
+        });
+
+        $('#select-all').click(function () {
+
+            $(".indexTable").fadeIn();
+
+
+        });
+
+        $('.nav-link').click(function () {
+            $('.nav-link').removeClass("active");
+            $(this).addClass("active");
+        })
+    })
+</script>
+
+@*<script>
+        var navitem = document.getElementsByClassName("nav-link");
+        for (var i = 0; i < navitem.length; i++) {
+            navitem[i].addEventListener("click", menuclick);
+        }
+        function menuclick() {
+            for (var s = 0; s < navitem.length; s++) {
+                navitem[s].classList.remove("active");
+            }
+            this.classList.add("active");
+        }
+    </script>*@
+@*</body>
+    </html>*@

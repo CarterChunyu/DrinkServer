@@ -1,0 +1,274 @@
+﻿@model IEnumerable<Supplier>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor _accessor
+@{
+    Layout = null;
+    LoginAuthorizeVM vm = _accessor.HttpContext.Session.GetObject<LoginAuthorizeVM>("User");
+    string Type = ViewData["Type"].ToString();
+    int page = (int)ViewData["nowpage"];
+    int pages = int.Parse(ViewData["pages"].ToString());
+    int range = 3;
+    int add = page + range - pages <= 0 ? 0 : page + range - pages;
+    int pbegin = page - range - add >= 1 ? page - range - add : 1;
+    int pend = pbegin + range * 2 <= pages ? pbegin + pbegin + range * 2 : pages;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/boder.css" rel="stylesheet" />
+    <title>Navigation</title>
+</head>
+
+<body class="bgBody">
+
+    <nav class="navbar navbar-expand-md navbar-dark mb-4 bgNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-action="HomePage" asp-controller="Login">SNR</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @if (vm.LookOrders_Place == true || vm.LookOrders_Proccess == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Orders">Orders</a>
+                        </li>
+                    }
+                    @if (vm.LookInventory)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Inventory
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" asp-action="Materials" asp-controller="Materials">Materials</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Suppliers" asp-controller="Suppliers">Suppliers</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookEntities)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="EntitiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Entities
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="EntitiesDropdown">
+                                <li><a class="dropdown-item" asp-action="Stores" asp-controller="Stores">Stores</a></li>
+                                <li><a class="dropdown-item" asp-action="Warehouses" asp-controller="WarehouseCreateViewModels">Warehouses</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookReports)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reports
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" href="reports/toast.html">Toast</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookSettings)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="SettingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Settings
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="SettingsDropdown">
+                                <li><a class="dropdown-item" asp-action="Profile" asp-controller="Login">My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Login" asp-controller="Login">Logout</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookAdmin)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="AdminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="AdminDropdown">
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="Team">Teams</a></li>
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="User">Users</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main role="main" class="container mb-5">
+        <div class="index indexSuppliers">
+            <div class="index__filter">
+                <ul class="nav flex-column nav-pills">
+                    <li class="nav-item">
+                        <a class="nav-link active bg-dark" aria-current="page" href="/Suppliers/Suppliers" id="all">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Suppliers/Suppliers?Type=Manufacturer" id="Manufacturer">Manufacturer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Suppliers/Suppliers?Type=Vendor" id="Vendor">Vendor</a>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="index__content">
+                <table class="indexTable">
+                    <caption>Supplier</caption>
+                    <thead>
+                        <tr>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Type)
+                            </th>
+                        </tr>
+                    </thead>
+
+                    @foreach (var type in Model)
+                    {
+
+                        if (type.Type == "Vendor")
+                        {
+                            <tbody class="bg-white Vendor">
+                                <tr>
+                                    <td><a asp-action="Suppliers_Details" asp-route-id="@type.Id" class="@type.Type"> <strong>@Html.DisplayFor(modelItem => type.Name)</strong></a></td>
+                                    <td>
+                                        <span class="badge bg-secondary">Vendor</span>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        }
+
+                    }
+
+                    @foreach (var type in Model)
+                    {
+
+                        if (type.Type == "Manufacturer")
+                        {
+                            <tbody class="bg-white Manufacturer">
+                                <tr>
+                                    <td><a asp-action="Suppliers_Details" asp-route-id="@type.Id" class="@type.Type"> <strong>@Html.DisplayFor(modelItem => type.Name)</strong></a></td>
+                                    <td>
+                                        <span class="badge bg-secondary">Manufacturer</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+
+                    }
+
+                    @foreach (var type in Model)
+                    {
+
+                        if (type.Type == "Vendor,Manufacturer")
+                        {
+                            <tbody class="bg-white ">
+                                <tr>
+                                    <td><a asp-action="Suppliers_Details" asp-route-id="@type.Id" class="@type.Type"> <strong>@Html.DisplayFor(modelItem => type.Name)</strong></a></td>
+                                    <td>
+                                        <span class="badge bg-secondary">Vendor,Manufacturer</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        }
+
+                    }
+
+                </table>
+                <nav aria-label="Page Navigation">
+                    <ul class="pagination pagination-sm">
+                        @if (page == 1)
+                        {
+                            <li class="page-item"><a class="page-link" disabled="disabled">Previous</a></li>
+                        }
+                        else
+                        {
+                            string url = $"/Suppliers/Suppliers?Type={Type}&page={page - 1}";
+                            <li class="page-item"><a class="page-link" href="@url">Previous</a></li>
+                        }
+
+
+                        @for (int i = pbegin; i <= pend; i++)
+                        {
+                            string url = $"/Suppliers/Suppliers?Type={Type}&page={i}";
+                            if (i == page)
+                            {
+                                <li class="page-item"><a class="page-link" style="color:red" href="@url">@i</a></li>
+
+                            }
+                            else
+                            {
+                                <li class="page-item"><a class="page-link" href="@url">@i</a></li>
+                            }
+                        }
+
+
+                        @if (page == pages)
+                        {
+                            <li class="page-item"><a class="page-link" disabled="disabled">Next</a></li>
+                        }
+                        else
+                        {
+                            string url = $"/Suppliers/Suppliers?Type={Type}&page={page + 1}";
+                            <li class="page-item"><a class="page-link" href="@url">Next</a></li>
+                        }
+
+
+                    </ul>
+                </nav>
+
+
+                <div class="form-group row mt-5">
+                    <div class="col">
+                        <a asp-action="Suppliers_Create" class="btn btn-primary me-3" role="button">New Supplier</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+
+</body>
+</html>
+<script src="~/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    $(function () {
+        $('#Vendor').click(function () {
+            $(".Manufacturer").fadeOut();
+            $(".Vendor").fadeIn();
+
+        });
+
+        $('#Manufacturer').click(function () {
+
+            $(".Vendor").fadeOut();
+            $(".Manufacturer").fadeIn();
+
+        });
+
+        $('#all').click(function () {
+            $(".Vendor").fadeIn();
+            $(".Manufacturer").fadeIn();
+            /*$(".Vendor,Manufacturer")*/
+        })
+        $('.nav-link').click(function () {
+            $('.nav-link').removeClass("active");
+            $(this).addClass("active");
+        })
+    })
+</script>

@@ -1,0 +1,245 @@
+﻿@model IEnumerable<DrinkServer.Models.MaterialCategory>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor _accessor
+@inject OrderService os
+
+@{
+    Layout = null;
+    LoginAuthorizeVM vm = _accessor.HttpContext.Session.GetObject<LoginAuthorizeVM>("User");
+}
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/boder.css" rel="stylesheet" />
+    <title>Process Order</title>
+</head>
+<body class="bgBody">
+
+    <nav class="navbar navbar-expand-md navbar-dark mb-4 bgNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-action="HomePage" asp-controller="Login">SNR</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @if (vm.LookOrders_Place == true || vm.LookOrders_Proccess == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Orders">Orders</a>
+                        </li>
+                    }
+                    @if (vm.LookInventory)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Inventory
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" asp-action="Materials" asp-controller="Materials">Materials</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Suppliers" asp-controller="Suppliers">Suppliers</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookEntities)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="EntitiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Entities
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="EntitiesDropdown">
+                                <li><a class="dropdown-item" asp-action="Stores" asp-controller="Stores">Stores</a></li>
+                                <li><a class="dropdown-item" asp-action="Warehouses" asp-controller="WarehouseCreateViewModels">Warehouses</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookReports)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reports
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" href="reports/toast.html">Toast</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookSettings)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="SettingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Settings
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="SettingsDropdown">
+                                <li><a class="dropdown-item" asp-action="Profile" asp-controller="Login">My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Login" asp-controller="Login">Logout</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookAdmin)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="AdminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="AdminDropdown">
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="Team">Teams</a></li>
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="User">Users</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main role="main" class="container mb-5">
+
+        <h3 class="mb-3">Process Order # 156</h3>
+
+        <div class="details">
+
+            <div class="row">
+                <dl class="col-md-4 col-sm-12">
+                    <dt>From</dt>
+                    <dd>@ViewBag.formToInfo.Split(',')[1]</dd>
+                </dl>
+                <dl class="col-md-4 col-sm-12">
+                    <dt>To</dt>
+                    <dd>@ViewBag.formToInfo.Split(',')[2]</dd>
+                </dl>
+                <dl class="col-md-4 col-sm-12">
+                    <dt>Order Date</dt>
+                    <dd>
+                        2021-11-07 1:07 pm
+                        <br>by Name
+                    </dd>
+                </dl>
+            </div>
+
+        </div>
+
+        <form>
+
+            <!--<div class="ordersProcess">
+                <div class="opRow">
+                    <label class="opTH opThWHStatus" for="SelectStatus">Status</label>
+                    <div class="opTD opTdWHStatus">
+                        <select class="form-select form-select-sm my-1" id="SelectStatus" aria-label="Select Status">
+                            <option value="Submitted" selected>New</option>
+                            <option value="Processed">Processing</option>
+                            <option value="Completed">Fulfilled</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="opRow">
+                    <label class="opTH opThWHDD" for="DeliveryDate">Delivery Date</label>
+                    <div class="opTD opTdWHDD"><input type="date" class="form-control form-control-sm my-1" id="DeliveryDate"></div>
+                </div>-->
+
+                <!-- Only users that can process this warehouse will see these private notes. -->
+                <!--<div class="opRow">
+                    <div class="opTH opThWHPrivateNote">
+                        <label class="" for="PrivateNote">Private Note</label>
+                        <div class="opHelpText">Only users that can process this warehouse will see these notes.</div>
+                    </div>
+                    <div class="opTD opTdWHPrivateNote">
+                        <textarea class="form-control form-control-sm" id="PrivateNotes" rows="5"></textarea>
+                    </div>
+                </div>
+            </div>-->
+
+        </form>
+        @foreach (var category in Model)
+        {
+            if (ViewBag.SelectCategies.Contains(category.Name))
+            {
+                <div class="ocCaption">@category.Name</div>
+
+                <div class="ordersContainer">
+                    <div class="ocRowTH">
+                        <div class="ocTH">&nbsp;</div>
+                        <div class="ocTH">SKU</div>
+                        <div class="ocTH">Name</div>
+                        <div class="ocTH text-center">Last Order</div>
+                        <div class="ocTH text-center">QTY</div>
+                    </div>
+
+                    @foreach (var material in category.Materials)
+                    {
+                        if (ViewBag.QTYInfos.ContainsKey(material.Id.ToString()))
+                        {
+                            <div class="ocRowTD">
+                                <div class="ocTD occTN"><img src="/Images/@material.Picture" class="rounded occTNimg" alt=""></div>
+                                <div class="ocTD ocTdSKU">@material.Sku</div>
+                                <div class="ocTD ocTdName">
+                                    @material.EnglishName
+                                    <br>@material.ChineseName
+                                </div>
+                                <div class="ocTD ocTdLastQTY">@os.Getnumber(material.Id)</div>
+                                <div class="ocTD ocTdQTY">
+                                    <input type="number" class="form-control text-center input-qty" id="@material.Id" value="@ViewBag.QTYInfos[material.Id.ToString()]" category="@material.MaterialCategory.Name">
+                                </div>
+                            </div>
+                        }
+
+                    }
+
+
+
+                </div>
+            }
+        }
+        <div class="form-group row mt-5">
+            <div class="col">
+                <form action="/Orders/Review" method="post" id="myForm">
+                    <a asp-action="Index" class="btn btn-link me-3" role="button">Cancel</a>
+
+                    @*<a href="02-create-edit.html" class="btn btn-secondary me-3" role="button">Edit</a>*@
+
+                    <input type="hidden" name="formToInfo" value="@ViewBag.formToInfo" />
+                    <input type="hidden" name="QTYInfo" id="qtyinfo" value="" />
+                    <input type="hidden" name="SelectCategies" id="select-categories" value="" />
+
+                    <button type="submit" class="btn btn-primary">Send Order</button>
+                </form>
+            </div>
+        </div>
+
+
+    </main>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $("#myForm").submit(function () {
+                var qtyarray = [];
+                var categoryarray = [];
+                $(".input-qty").each(function () {
+                    if ($(this).val() != "0") {
+                        qtyarray.push(`${$(this).attr("id")}@@${$(this).val()}`);
+                        if (categoryarray.indexOf($(this).attr("category")) == -1) {
+                            categoryarray.push($(this).attr("category"));
+                        }
+                    }
+                    //$(this).attr("id")
+                    //$(this).val()
+                });
+                $("#qtyinfo").val(qtyarray);
+                $("#select-categories").val(categoryarray);
+                console.log(qtyarray);
+            });
+
+        })
+    </script>
+</body>
+</html>

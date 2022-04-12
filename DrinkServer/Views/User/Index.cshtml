@@ -1,0 +1,150 @@
+﻿@model IEnumerable<User>
+@{ 
+    // int page = int.Parse(ViewData["nowpage"].ToString());
+    int page = (int)ViewData["nowpage"];
+    int pages = int.Parse(ViewData["pages"].ToString());
+    int range = 4;
+
+    //int pbegin = page - 4 >= 1 ? page - 4 : 1;
+    //int pend = pbegin + 8 <= pages ? pbegin + 8 : pages;
+    int add = page + range - pages <= 0 ? 0 : page + range - pages;
+    int pbegin = page - range - add >= 1 ? page - range - add : 1;
+    int pend = pbegin + range * 2 <= pages ? pbegin + pbegin + range * 2 : pages;
+
+    bool status = (bool)ViewData["status"]; 
+}
+
+
+<div class="index indexUsers">
+
+    <div class="index__filter">
+        <ul class="nav flex-column nav-pills">
+            @if (status)
+            {
+                <li class="nav-item">
+                    <a class="nav-link active bg-dark" aria-current="page" asp-controller="User"
+                       asp-action="Index" asp-route-page="1" asp-route-status="@true">Active</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="User"
+                       asp-action="Index" asp-route-page="1" asp-route-status="@false">Disabled</a>
+                </li>
+            }
+            else
+            {
+                <li class="nav-item">
+                    <a class="nav-link"  asp-controller="User"
+                       asp-action="Index" asp-route-page="1" asp-route-status="@true">Active</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active bg-dark" aria-current="page" asp-controller="User"
+                       asp-action="Index" asp-route-page="1" asp-route-status="@false">Disabled</a>
+                </li>
+            }
+
+        </ul>
+    </div><!-- /index__filter -->
+
+    <div class="index__content">
+
+        <table class="indexTable">
+            <caption>Users</caption>
+            <thead>
+                <tr>
+                    <th scope="col" width="65%">Name</th>
+                    <th scope="col" width="35%">Team</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                @foreach (var item in Model)
+                {
+                    //string url = $"/User/Details/?userId={item.Id}";
+                    if (item.Team!=null&&item.Team.Name == "adminteam")
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="User" asp-action="Details" asp-route-id="@item.Id"><strong>@item.DisplayName</strong></a>
+                            </td>
+                            <td>
+                                <span class="badge bg-info text-dark">@item.Team.Name</span>
+                            </td>
+                        </tr>                       
+                    }
+                    else
+                    {
+            <tr>
+                <td><a asp-controller="User" asp-action="Details" asp-route-id="@item.Id"><strong>@item.DisplayName</strong></a></td>
+                   @if (item.Team == null)
+                    {
+                       <td>
+                           <span class="badge bg-success">null</span>
+                       </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <span class="badge bg-success">@item.Team.Name</span>
+                        </td>
+                    }   
+            </tr>
+                    }
+                }
+
+
+
+            </tbody>
+        </table>
+
+        <nav aria-label="Page Navigation">
+            <ul class="pagination pagination-sm">
+                @if (page == 1)
+                {
+                    <li class="page-item disabled"><a class="page-link">Previous</a></li>
+                }
+                else
+                {
+                    int num = page - 1;
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="User" asp-action="Index"
+                           asp-route-page="@num" asp-route-status="@status">Next</a>
+                    </li>
+                }
+                @for (int i = pbegin; i <=pend ; i++)
+                {
+                    if (page == i)
+                    {
+                        <li class="page-item active" aria-current="page"><a class="page-link" asp-controller="User" asp-action="Index"
+                           asp-route-page="@i" asp-route-status="@status">@i</a></li>
+                    }
+                    else
+                    {
+                        <li class="page-item"><a class="page-link" asp-controller="User" asp-action="Index"
+                           asp-route-page="@i" asp-route-status="@status">@i</a></li>
+                    }
+                }
+                
+                @if (page == pages)
+                {
+                    <li class="page-item disabled"><a class="page-link">Next</a></li>
+                }
+                else
+                {
+                    int num = page + 1;
+                    <li class="page-item">
+                        <a class="page-link" asp-controller="User" asp-action="Index"
+                           asp-route-page="@num" asp-route-status="@status">Next</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+
+        <div class="form-group row mt-5">
+            <div class="col">
+                <a asp-action="Create" class="btn btn-primary" role="button">New User</a>
+            </div>
+
+        </div><!-- /index__content -->
+
+    </div><!-- /index -->
+
+</div>

@@ -1,0 +1,126 @@
+﻿@model Order
+
+@{
+   
+}
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/boder.css" rel="stylesheet" />
+
+    <title>Orders</title>
+</head>
+<body class="bgBody">
+    <div class="ordersLocations">
+        <div class="orLoRow">
+            <div class="orLoTD orLoTdFrom">
+                <div class="orLoMeta">From</div>
+                <div class="orLoEntity">@ViewBag.FromMappings</div>
+            </div>
+
+            <div class="orLoTD orLoTdTo">
+                <div class="orLoMeta">To</div>
+                <div class="orLoEntity">@ViewBag.ToMappings</div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-sm bg-light orderCategories" role="tablist">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#CategoriesLink" aria-controls="CategoriesLink" aria-expanded="false">
+                Select Category
+            </button>
+            <div class="collapse navbar-collapse" id="CategoriesLink">
+                <div class="navbar-nav nav nav-pills" role="tablist">
+
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        <button id="chose" data-bs-toggle="pill" type="button" role="tab" class="nav-link " data-bs-target="#Category_@item.Id" aria-selected="true">@item.Name</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="tab-content">
+        @foreach (var category in ViewBag.Categories)
+        {
+            <div class="tab-pane fade show " role="tabpanel" id="Category_@category.Id">
+                <div class="ordersContainer">
+                    <div class="ocRowTH">
+                        <div class="ocTH">&nbsp;</div>
+                        <div class="ocTH">SKU</div>
+                        <div class="ocTH">Name</div>
+                        <div class="ocTH text-center">Last Order</div>
+                        <div class="ocTH text-center">QTY</div>
+                    </div>
+
+                    @foreach (var item in Model.OrderDetails.Where(m => m.Material.MaterialCategoryId == category.Id).ToList())
+                    {
+                        <div class="ocRowTD">
+                            <div class="ocTD occTN"><img src="/Images/@item.Material.Picture" class="rounded occTNimg" alt=""></div>
+                            <div class="ocTD ocTdSKU">@item.Material.Sku</div>
+                            <div class="ocTD ocTdName">
+                                @item.Material.EnglishName
+                                <br>@item.Material.ChineseName
+                            </div>
+                            <div class="ocTD ocTdLastQTY">5</div>
+                            <div class="ocTD ocTdQTY">
+                                <input type="number" class="form-control text-center input-qty" value="@item.Count" id="@item.Id" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+    @*@if (Global.userLevel == 3 )
+    {
+    }*@
+    <div class="form-group row mt-5">
+        <div class="col">
+
+            <div class="form-group row mt-5">
+                <div class="col">
+                    <form action="/Orders/Details_Edit" method="post" id="myForm">
+                        <a asp-action="Index" class="btn btn-link me-3" role="button">Cancel</a>
+
+                        <input type="hidden" name="OrderId" id="orderId" value="@Model.Id" />
+
+                        <input type="hidden" name="QTYInfo" id="qtyinfo" value="" />
+
+                        <input type="submit" name="name" class="btn btn-primary" value="save" />
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    @*</main>*@
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script>
+        $(function () {
+            $('.tab-pane').first().addClass('active');
+            $('#chose').addClass('active');
+            $("#myForm").submit(function () {
+                var qtyarray = [];
+                $(".input-qty").each(function () {
+                    if ($(this).val() != "0") {
+                        qtyarray.push(`${$(this).attr("id")}@@${$(this).val()}`);
+                    }
+                });
+                $("#qtyinfo").val(qtyarray);
+                console.log(qtyarray);
+            });
+
+        })
+    </script>
+</body>
+</html>

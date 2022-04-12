@@ -1,0 +1,181 @@
+﻿@*<table class="indexTable">
+        <caption>Teams</caption>
+        <thead>
+            <tr>
+                <th scope="col" width="65%">Name</th>
+                <th scope="col" width="35%" class="text-center">Members</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            @foreach (var item in Model)
+            {
+                string url = $"/Team/Details?Id={item.Id}";
+                <tr>
+                    <td>
+                        <a href="@url">@item.Name</a>
+                    </td>
+                    <td>
+                        <a>@item.Count</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <nav aria-label="Page Navigation">
+        <ul class="pagination pagination-sm">
+            <li class="page-item disabled"><a class="page-link">Previous</a></li>
+            <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
+
+    <div class="form-group row mt-5">
+        <div class="col">
+            <a asp-action="Create" class="btn btn-primary" role="button">New Team</a>
+        </div>
+    </div>*@
+
+@model IEnumerable<TeamIndexVM>
+@{
+
+    // int page = int.Parse(ViewData["nowpage"].ToString());
+    int page = (int)ViewData["nowpage"];
+    int pages = int.Parse(ViewData["pages"].ToString());
+    int range = 4;
+
+    //int pbegin = page - 4 >= 1 ? page - 4 : 1;
+    //int pend = pbegin + 8 <= pages ? pbegin + 8 : pages;
+    int add = page + range - pages <= 0 ? 0 : page + range - pages;
+    int pbegin = page - range - add >= 1 ? page - range - add : 1;
+    int pend = pbegin + range * 2 <= pages ? pbegin + pbegin + range * 2 : pages;
+}
+
+
+<table class="indexTable">
+    <caption>Teams</caption>
+    <thead>
+        <tr>
+            <th scope="col" width="65%">Name</th>
+            <th scope="col" width="35%" class="text-center">Members</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        @foreach (var item in Model)
+        {
+            @if(item.Name== "adminteam")
+            {
+                <tr>
+                    <td class="bg-warning"><a asp-controller="Team" asp-action="Details" asp-route-id="@item.Id" class="text-dark">
+                        <strong>@item.Name</strong></a></td>
+                    <td class="text-center">
+                    @item.Count
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <td><a asp-controller="Team" asp-action="Details" asp-route-id="@item.Id"><strong>@item.Name</strong></a></td>
+                    <td class="text-center">
+                    @item.Count
+                    </td>
+                </tr>
+            }   
+        }
+      
+    </tbody>
+</table>
+
+
+@*<div>
+    @if (page == 1)
+    {
+        <label><a disabled="disabled">Previous</a></label>
+    }
+    else
+    {
+        string url = $"/Test/Index?page={page - 1}";
+        <label><a href="@url">Previous</a></label>
+    }
+
+
+    @for (int i = pbegin; i <= pend; i++)
+    {
+        string url = $"/Test/Index?page={i}";
+        if (i == page)
+        {
+            <label><a style="color:red" href="@url">@i</a></label>
+
+        }
+        else
+        {
+            <label><a href="@url">@i</a></label>
+        }
+    }
+
+
+    @if (page == pages)
+    {
+        <label><a disabled="disabled">Next</a></label>
+    }
+    else
+    {
+        string url = $"/Test/Index?page={page + 1}";
+        <label><a href="@url">Next</a></label>
+    }
+</div>*@
+<nav aria-label="Page Navigation">
+    <ul class="pagination pagination-sm">
+        @if (page == 1)
+        {
+            <li class="page-item disabled"><a class="page-link" disabled="disabled">Previous</a></li>
+        }
+        else
+        {
+            int num = page - 1;
+            <li class="page-item">
+                <a class="page-link" asp-controller="Team"
+                   asp-action="Index" asp-route-page="@num">Previous</a>
+            </li>
+        }
+        @for (int i = pbegin; i <= pend; i++)
+        {
+            if (i == page)
+            {
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" asp-controller="Team"
+                       asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Team"
+                       asp-action="Index" asp-route-page=@i>@i</a>
+                </li>
+            }
+        }
+        @if (page == pages)
+        {
+            <li class="page-item disabled"><a class="page-link" disabled="disabled">Next</a></li>
+        }
+        else
+            {
+                int num = page + 1;
+                <li class="page-item"><a class="page-link" asp-controller="Team"
+                   asp-action="Index" asp-route-page="@num">Next</a></li>
+            }
+    </ul>
+</nav>
+
+
+
+<div class="form-group row mt-5">
+    <div class="col">
+        <a asp-controller="Team" asp-action="Create" 
+           class="btn btn-primary" role="button">New Team</a>
+    </div>
+</div>

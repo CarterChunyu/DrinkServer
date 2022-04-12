@@ -1,0 +1,121 @@
+﻿@model IEnumerable<MaterialCategory>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+        <ul class="list-group">
+
+            @foreach (var item in Model)
+            {
+                var x = $"#EditCategoryModal{item.Id}";
+                var y = $"EditCategoryModal{item.Id}";
+                var delete_id = $"#DeleteConfirmModal{item.Id}";
+                var delete_ids = $"DeleteConfirmModal{item.Id}";
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @Html.DisplayFor(modelItem => item.Name)
+                    <div class="categoryTools">
+                        @if (item.Materials.Count() ==0)
+                        {
+                            <button type="submit" class="btn btn-link btn-sm link-danger me-3" data-bs-toggle="modal" data-bs-target="@delete_id" id="@item.Id">Delete</button>
+                        }
+
+                        <button type="submit" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="@x" id="@item.Id">Edit</button>
+                    </div>
+                </li>
+                <!-- Delete Confirm Modal -->
+                <form asp-action="MaterialCategory_Delete" asp-route-id="@item.Id">
+                    <div class="modal fade" id="@delete_ids" tabindex="-1" aria-labelledby="Delete Confirmation" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    Delete this category?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-link btn-sm link-danger me-3">Delete</button>
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <form asp-action="MaterialCategory_Edit" asp-route-id="@item.Id">
+                    <!-- Edit Category Modal -->
+                    <div class="modal fade" id="@y" tabindex="-1" aria-labelledby="Edit Category" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit Category</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <div class="alert alert-danger" role="alert">
+                                        Please enter a category <strong>Name.</strong>
+                                    </div>
+                                    <div class="row g-1 mb-1">
+                                        <label class="col-sm-2 col-form-label-sm" for="CategoryName">Name <span class="text-danger">*</span></label>
+                                        <input type="hidden" />
+                                        <div class="col-sm-10">
+                                            <input name="Name" class="form-control form-control-sm" value="@item.Name" />
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-link btn-sm me-3" data-bs-dismiss="modal">Cancel</button>
+                                    <input type="submit" value="Save" class="btn btn-primary" />
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            }
+        </ul>
+
+        <div class="form-group row mt-5">
+            <div class="col">
+                <a asp-action="Materials" asp-controller="Materials" class="btn btn-link" role="button">&laquo; Back to Materials</a>
+                <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddCategoryModal">Add Category</button>
+            </div>
+        </div>
+
+
+    <!-- Add Category Modal -->
+    <form asp-action="MaterialCategory_Create">
+        <div class="modal fade" id="AddCategoryModal" tabindex="-1" aria-labelledby="Add Category" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        @*<div class="alert alert-danger" role="alert">
+                            Please enter a category <strong>Name.</strong>
+                        </div>*@
+                        <div class="row g-1 mb-1">
+                            <label class="col-sm-2 col-form-label-sm" for="CategoryName">Name <span class="text-danger">*</span></label>
+                            <div class="col-sm-10">
+                                <input name="Name" class="form-control form-control-sm" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link btn-sm me-3" data-bs-dismiss="modal">Cancel</button>
+                        <input type="submit" value="Add" class="btn btn-primary" />
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+

@@ -1,0 +1,41 @@
+﻿@model LoginVM
+@{
+    Layout = "_LoginLayout";
+    ViewBag.Title = "User Login Page";
+}
+@{
+    var returnUrl = Context.Request.Query["ReturnUrl"];
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+
+    <form asp-action="Login" asp-controller="Login" method="post"
+          asp-route-returnurl="@returnUrl">
+        <div class="login" id="Login">
+            <table>
+                <tr><td colspan="2"><label class="text-danger">@Html.ValidationMessageFor(model => model.DenialReason)</label></td></tr>
+                <tr class="group">
+                    <td class="lab"><label asp-for="Account"></label></td>
+                    <td><input asp-for="Account"></td>
+                </tr>
+                <tr><td><span asp-validation-for="Account" class="text-danger"></span></td></tr>
+                <tr class="group">
+                    <td class="lab"><label asp-for="Password"></label></td>
+                    <td><input asp-for="Password" type="password"></td>
+                </tr>
+                <tr><td><span asp-validation-for="Password" class="text-danger"></span></td></tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><input class="lbtn" type="submit" value="Login"></td>
+                </tr>
+                <tr><td><label>2022.02.22-1</label></td></tr>
+            </table>
+        </div>
+    </form>
+</body>
+</html>

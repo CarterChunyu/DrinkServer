@@ -1,0 +1,255 @@
+﻿@model TeamEditVM
+
+@{
+    string edit_url = $"/Team/Edit?teamId={Model.Id}";
+    string delete_url = $"/Team/Delete?teamId={Model.Id}";
+    //string managemember_url = $"/Team/ManageMembers?teamId={Model.Id}";
+}
+
+
+@*<div>
+        <label>@Model.Name</label>
+    </div>
+    <div>
+        <h3>Access</h3>
+        <hr />
+        @foreach (var item in Model.StoreVMs)
+        {
+            if (item.Flag)
+            {
+                <a>@item.Name</a>
+                <hr />
+            }
+        }
+    </div>
+
+    <div>
+        <h3>Place Orders</h3>
+        <hr />
+        @foreach (var item in Model.Warehouse_SupportVM)
+        {
+            if (item.Flag)
+            {
+                <a>@item.FromName</a> <a>@item.ToName</a>
+                <hr />
+            }
+        }
+    </div>
+    <div>
+        <h3>Process Orders</h3>
+        <hr />
+        @foreach (var item in Model.WarehouseVMs)
+        {
+            if (item.Flag)
+            {
+                <label>Warehouse</label><a>@item.Name</a>
+                <hr />
+            }
+        }
+    </div>
+    <div>
+        <h3>Members</h3>
+        @foreach (var item in Model.UserVMs)
+        {
+
+            if (item.Flag)
+            {
+                string url = $"/User/Details?userId={item.Id}";
+                <label><a href="@url">@item.Name</a></label>
+                <hr />
+            }
+        }
+        <a href="@managemember_url">Manage</a>
+    </div>
+    <a asp-action="Index">Back to Teams</a> <a href="@edit_url">Edit</a>  <a href="@delete_url">Delete</a>*@
+
+
+
+
+
+<h3 class="mb-3">@Model.Name</h3>
+
+<ul class="nav nav-pills navSections">
+    <li class="nav-item">
+        <a class="nav-link active bg-dark" aria-current="page" href="teams-details.html">Details</a>
+    </li>
+    @*<li class="nav-item">
+        <a class="nav-link" href="teams-details-log.html">Log</a>
+    </li>*@
+</ul>
+
+<div class="details">
+    <div class="row">
+        <div class="col-sm-2 details__title">Access</div>
+        <div class="col-sm-10 mb-3">
+            <!-- If Empty, Display 無 -->
+            @if (!Model.StoreVMs.Any(p=>p.Flag))
+            {
+                <span class="badge rounded-pill bg-light text-dark">無</span>
+            }
+            else
+            {
+                <ul>
+                    <li>
+                        <span class="badge bg-success">Reports</span> View Toast reports for selected stores.
+                        <ul class="twoColumns">
+                            @foreach (var item in Model.StoreVMs)
+                            {
+                                if (item.Flag)
+                                {
+                                    <li>
+                                        <a asp-action="Stores_Details" asp-controller="Stores"
+                                           asp-route-id="@item.Id" class="details__link">@item.Name</a>
+                                    </li>
+
+                                }
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="details">
+    <div class="row">
+        <div class="col-sm-2 details__title">Place Orders</div>
+        <div class="col-sm-10">
+            <table class="actionTable">
+                <thead>
+                    <tr>
+                        <th width="50%">From</th>
+                        <th></th>
+                        <th width="50%">To</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+
+                    @foreach (var item in Model.Warehouse_SupportVM)
+                    {
+                        if (item.Flag)
+                        {
+                            <tr>
+
+                                <td>
+
+                                    @if (item.FromType == "Store")
+                                    {
+                                        <span class="badge bg-secondary">@item.FromType</span>
+                                        <a asp-action="Stores_Details" asp-controller="Stores" asp-route-id="@item.FromId"
+                                           class="details__link">@item.FromName</a>
+                                    }
+                                    @if (item.FromType == "Warehouse")
+                                    {
+                                        <span class="badge bg-secondary">@item.FromType</span>
+                                        <a asp-action="Warehouses_Details" asp-controller="WarehouseCreateViewModels" asp-route-id="@item.FromId"
+                                           class="details__link">@item.FromName</a>
+                                    }
+                                </td>
+                                <td>➜</td>
+                                <td>
+                                    <span class="badge bg-secondary">Warehouse</span>
+                                    <a asp-action="Warehouses_Details" asp-controller="WarehouseCreateViewModels" asp-route-id="@item.ToId"
+                                       class="details__link">@item.ToName</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                    @*<td>
+                            <span class="badge bg-secondary">Store</span>
+                            <a href="../entities/stores-details.html" class="details__link">Chino Spectrum Marketplace</a>
+                        </td>
+                        <td>&#10140;</td>
+                        <td>
+                            <span class="badge bg-secondary">Warehouse</span>
+                            <a href="../entities/warehouses-details.html" class="details__link">南加州 Regional</a>
+                        </td>*@
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="details">
+    <div class="row">
+        <div class="col-sm-2 details__title">Process Orders</div>
+        <div class="col-sm-10 mb-3">
+
+            <!-- If Empty, Display 無 -->
+            @if (!Model.WarehouseVMs.Any(p => p.Flag))
+            {
+                <span class="badge rounded-pill bg-light text-dark">無</span>
+            }
+            else
+            {
+
+                @foreach (var item in Model.WarehouseVMs)
+                {
+                    if (item.Flag)
+                    {
+                        <ul>
+                            <li>
+                                <span class="badge bg-secondary">@item.Type</span>
+                                <a asp-action="Warehouses_Details" asp-controller="WarehouseCreateViewModels" asp-route-id="@item.Id" class="details__link">@item.Name</a>
+                            </li>
+                        </ul>
+                    }
+                }
+
+            }
+        </div>
+    </div>
+</div>
+
+<div class="details">
+    <div class="row">
+        <div class="col-sm-2 details__title">Members</div>
+        <div class="col-sm-10 mb-3">
+            <ul class="mb-3">
+                @foreach (var item in Model.UserVMs)
+                {
+                     if (item.Flag)
+                    {
+                        <li><a asp-action="Details" asp-controller="User"  asp-route-id="@item.Id" 
+                               class="details__link">@item.Name</a></li>
+                    }
+                }               
+            </ul>
+
+            <a asp-action="ManageMembers" asp-controller="Team" asp-route-id="@Model.Id"
+               class="btn btn-primary btn-sm" role="button">Manage</a>
+        </div>
+    </div>
+</div>
+
+<div class="form-group row mt-5">
+    <div class="col">
+        <a href="/Team/Index" class="btn btn-link" role="button">&laquo; Back to Teams</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-sm" role="button">Edit</a>
+        <!-- Admin Only -->
+        <!-- Only if Team has No Members -->
+        @if (!Model.UserVMs.Any(p => p.Flag))
+        {
+            <button type="submit" class="btn btn-link btn-sm link-danger deleteBtn" data-bs-toggle="modal" data-bs-target="#DeleteConfirmModal">Delete</button>
+        }
+    </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="modal fade" id="DeleteConfirmModal" tabindex="-1" aria-labelledby="Delete Confirmation" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                Delete this team?
+            </div>
+            <div class="modal-footer">
+                <a asp-action="Delete" asp-route-id="@Model.Id"  class="btn btn-link btn-sm link-danger me-3" role="button">Delete</a>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

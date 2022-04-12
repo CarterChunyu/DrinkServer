@@ -1,0 +1,12 @@
+﻿@model ListViewModel
+
+    
+
+@foreach (var item in Model.StoreList)
+{
+<div><input type="checkbox" value="@item.Id" name="store">@item.Name</div>
+}
+@foreach (var item in Model.WarehouseList)
+{
+    <div><input type="checkbox" value="@item.Id" name="Warehouse">@item.Name</div>
+}

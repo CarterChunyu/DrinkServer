@@ -1,0 +1,164 @@
+﻿@model TeamEditVM
+@*<form asp-action="Edit">
+        <input type="hidden" asp-for="Id"/>
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <hr />
+        <label>Access</label><label>Report</label>
+        @foreach (var item in Model.StoreVMs)
+        {
+            <input type="checkbox" value="@item.Id" checked="@item.Flag" name="Report_StroeIds" />
+            <label>@item.Name</label>
+        }
+        <hr />
+        <label>Place Orders</label>
+        @foreach (var item in Model.Warehouse_SupportVM)
+        {
+            <input type="checkbox" value="@item.Id" checked="@item.Flag" name="Warehouse_SupportIds" />
+            <label>@item.FromName</label><label>@item.ToName</label>
+        }
+        <hr />
+        <label>Process Orders</label>
+        @foreach (var item in Model.WarehouseVMs)
+        {
+            <input type="checkbox" value="@item.Id" checked="@item.Flag" name="Process_StoreIds" />
+            <label>@item.Name</label>
+        }
+        <br />
+        <input type="submit" value="Save" />
+    </form>*@
+
+
+<form asp-action="Edit">
+    <div class="row g-1 mb-1">
+        <input type="hidden" asp-for="Id" />
+        <label asp-for="Name" class="col-sm-2 col-form-label-sm" >Team Name<span class="text-danger">*</span></label>
+        <div class="col-sm-10">
+            <input asp-for="Name" type="text" class="form-control form-control-sm" id="EntityName" /></div>
+        </div>
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+
+    <hr class="my-3">
+
+    <div class="row g-1 mb-1">
+        <div class="col-sm-2 col-form-label-sm">Access</div>
+        <div class="col-sm-10">
+
+            <div class="row g-1">
+                <label class="col-sm-2 col-form-label-sm">Reports</label>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="AccessReports" id="NoAccessReports" value="NoAccessReports" data-bs-toggle="collapse" data-bs-target="#SelectToastReportStores" aria-expanded="false" aria-controls="SelectToastReportStores" checked>
+                        <label class="form__checkLabel" for="NoAccessReports">None</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="AccessReports" id="YesAccessReports" value="YesAccessReports" data-bs-toggle="collapse" data-bs-target="#SelectToastReportStores" aria-expanded="false" aria-controls="SelectToastReportStores">
+                        <label class="form__checkLabel" for="YesAccessReports">View Toast reports for selected stores.</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-1 mb-1 collapse" id="SelectToastReportStores">
+                <div class="offset-sm-2 col-sm-10">
+                    <div class="twoColumns mt-2">
+                        @for (int i = 0; i < Model.StoreVMs.Count; i++)
+                        {
+                            var item = Model.StoreVMs[i];
+                            string id = $"CheckExample{i}";
+                            <div class="form-check ms-5">
+                                <input value="@item.Id" checked="@item.Flag" name="Report_StroeIds"
+                                       class="form-check-input" type="checkbox" id="@id">
+                                <label class="form__checkLabel" for="@id">@item.Name</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="row g-1 mb-1">
+        <div class="col-sm-2 col-form-label-sm pt-0">Place Orders</div>
+        <div class="col-sm-10">
+            <table class="actionTable highlightRow">
+                <thead>
+                    <tr>
+                        <th><input class="form-check-input" type="checkbox" value="" id=""></th>
+                        <th width="50%">From</th>
+                        <th></th>
+                        <th width="50%">To</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white">
+                    @foreach (var item in Model.Warehouse_SupportVM)
+                    {
+                        <tr>
+                            <td>
+                                <input class="form-check-input" type="checkbox" value="@item.Id"
+                                       checked="@item.Flag" name="Warehouse_SupportIds">
+                            </td>
+                            <td><span class="badge bg-secondary">@item.FromType</span> @item.FromName</td>
+                            <td>&#10140;</td>
+                            <td><span class="badge bg-secondary">@item.ToType</span> @item.ToName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="row g-1 mb-1">
+        <div class="col-sm-2 col-form-label-sm pt-0">Process Orders</div>
+        <div class="col-sm-10">
+
+            @*<div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="Example3">
+                    <label class="form__checkLabel" for="Example3"><span class="badge bg-secondary">Warehouse</span> Warehouse 2</label>
+                </div>*@
+            @for (int i = 0; i < Model.WarehouseVMs.Count; i++)
+            {
+                var item = Model.WarehouseVMs[i];
+                string id = $"Example{i}";
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="@id"
+                           value="@item.Id" checked="@item.Flag" name="Process_StoreIds">
+                    <label class="form__checkLabel" for="@id">
+                        <span class="badge bg-secondary">@item.Type</span>@item.Name
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="form-group row mt-5">
+        <div class="col">
+            <a asp-controller="Team" asp-action="Index"
+               class="btn btn-link me-3" role="button">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+
+    @*<div class="form-group row mt-5">
+            <div class="col">
+                <a href="teams-details.html" class="btn btn-link me-3" role="button">Cancel</a>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </div>*@
+
+</form>
+
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

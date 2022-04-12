@@ -1,0 +1,102 @@
+﻿@model Supplier
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+
+<form asp-action="Suppliers_Edit">
+    <input type="hidden" asp-for="Id" />
+    <div class="row g-1 mb-1">
+        <label class="col-sm-2 col-form-label-sm" for="SupplierName">Supplier Name <span class="text-danger">*</span></label>
+        <div class="col-sm-10">
+            <input  class="form-control form-control-sm" value="@Model.Name" disabled="disabled" />
+            <input type="hidden" asp-for="Name" value="@Model.Name" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row g-1 mb-1">
+        <label class="col-sm-2 col-form-label-sm" for="SupplierCode">Code<span class="text-danger">*</span></label>
+        <div class="col-sm-3">
+            @*<input type="text" class="form-control form-control-sm" id="SupplierCode">*@
+            <input asp-for="Code" class="form-control form-control-sm" />
+            <span asp-validation-for="Code" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row g-1">
+        <label class="col-sm-2 col-form-label-sm" for="SupplierStatus">Status</label>
+        <div class="col-sm-3">
+            <select class="form-select form-select-sm" name="Status">
+                <option value="true">ACTIVE</option>
+                <option value="false">CLOSE</option>
+            </select>
+        </div>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="row g-1">
+        <label class="col-sm-2 col-form-label-sm pt-0">Type <span class="text-danger">*</span></label>
+        <div class="col-sm-5">
+
+            @if (Model.Type == "Vendor")
+            {
+                <div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Manufacturer" />Manufacturer</label>
+                </div>
+
+
+                <div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" checked="checked" class="form-check-input" name="Type" value="Vendor" />Vendor</label>
+                </div>
+
+
+                <div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Vendor,Manufacturer" />Both</label>
+                </div>
+
+
+            }
+            else if (Model.Type == "Manufacturer")
+            {
+                <div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Manufacturer" checked="checked" />Manufacturer</label>
+                </div><div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Vendor" />Vendor</label>
+                </div><div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Vendor,Manufacturer" />Both</label>
+                </div>
+            }
+            else
+            {
+                <div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Manufacturer" />Manufacturer</label>
+                </div><div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Vendor" />Vendor</label>
+                </div><div class="form-check">
+                    <label class="form__checkLabel"><input type="radio" class="form-check-input" name="Type" value="Vendor,Manufacturer" checked="checked" />Both</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <hr class="my-3">
+
+    <div class="row g-1">
+        <label class="col-sm-2 col-form-label-sm" for="Notes">Notes</label>
+        <div class="col-sm-6">
+            <textarea asp-for="Notes" class="form-control form-control-sm" />@Html.DisplayFor(model => model.Notes)</textarea>
+            <span asp-validation-for="Notes" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-group row mt-5">
+        <div class="col">
+            <a asp-action="Suppliers_Details" asp-route-id="@Model.Id" class="btn btn-link me-3" role="button">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+
+</form>

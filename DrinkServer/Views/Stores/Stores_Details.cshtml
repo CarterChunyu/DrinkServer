@@ -1,0 +1,95 @@
+﻿@model Store
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+        <h3 class="mb-3">Irvine Village Center</h3>
+
+        <ul class="nav nav-pills navSections">
+            <li class="nav-item">
+                <a class="nav-link active bg-dark" aria-current="page" href="warehouses-details.html">Details</a>
+            </li>
+            <!--<-->@*li class="nav-item">
+                <a class="nav-link" href="warehouses-details-log.html">Log</a>
+            </li>*@
+        </ul>
+
+        <div class="details">
+            <div class="row">
+                <dl class="col-md-3 col-sm-12">
+                    <dt>Store Name</dt>
+                    <dd>@Html.DisplayFor(model => model.Name)</dd>
+                </dl>
+
+                <dl class="col-md-3 col-sm-12">
+                    <dt>Region</dt>
+                    <dd>@Html.DisplayFor(model => model.Location.Name)</dd>
+                </dl>
+
+                <dl class="col-md-3 col-sm-12">
+                    <dt>Status</dt>
+                    @if (Model.Status == true)
+                    {
+                        <dd>Active</dd>
+                    }
+                    else
+                    {
+                        <dd>Close</dd>
+                    }
+
+                </dl>
+
+                <dl class="col-md-3 col-sm-12">
+                    <dt>Code</dt>
+                    <dd>
+                        <span class="badge rounded-pill bg-light text-dark">@Html.DisplayFor(model => model.Code)</span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="details">
+            <div class="row">
+                <dl class="col-sm-12">
+                    <dt>Notes</dt>
+                    <dd>
+                        <span class="badge rounded-pill bg-light text-dark">@Html.DisplayFor(model => model.Note)</span>
+                    </dd>
+                    <dd>
+                        If notes have newline,
+                        <br>then please
+                        <br>
+                        <br>preserve them.
+                    </dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="form-group row mt-5">
+            <div class="col">
+                <a asp-action="Stores" class="btn btn-link btn-sm" role="button">&laquo; Back to Stores</a>
+                <a asp-action="Stores_Edit" asp-route-id="@Model.Id" type="submit" class="btn btn-primary" >Edit</a>
+
+                <button type="submit" class="btn btn-link btn-sm link-danger deleteBtn" data-bs-toggle="modal" data-bs-target="#DeleteConfirmModal">Delete</button>
+
+             </div>
+        </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal fade" id="DeleteConfirmModal" tabindex="-1" aria-labelledby="Delete Confirmation" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    Delete this store?
+                </div>
+                <div class="modal-footer">
+                    <form asp-action="Stores_Delete">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <button type="submit" class="btn btn-link btn-sm link-danger deleteBtn">Delete</button>
+                    </form>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>

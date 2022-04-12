@@ -1,0 +1,154 @@
+﻿@*@model yavis_order.Models.Material*@
+@model MaterialCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    var s = ViewBag.x as ListViewModel;
+}
+<form asp-action="Materials_Create">
+    <div class="row g-1 mb-5 form__publicArea">
+        <div class="col-sm-2 form__publicAreaTitle">
+            <p><strong>NOTE:</strong> All users can see these SIX (6) fields when Ordering.</p>
+            <p>To see additional fields, the user will need correct permissions.</p>
+        </div>
+        <div class="offset-sm-1 col-sm-9">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="row g-1 mb-1">
+                <label asp-for="Sku" class="col-sm-2 col-form-label-sm" for="SKU">SKU<span class="text-danger">*</span></label>
+                <div class="col-sm-3">
+                    <input asp-for="Sku" class="form-control form-control-sm" id="Sku">
+                    <span class="text-danger">@ViewBag.ErrorMsg</span>
+                    <div class="text-danger" id="warning"></div>
+                </div>
+            </div>
+
+            <div class="row g-1 mb-1">
+                <label asp-for="MaterialCategory.Name" class="col-sm-2 col-form-label-sm" for="SelectCategory">MaterialCategory</label>
+                <div class="col-sm-6">
+                    <select asp-for="MaterialCategoryId" class="form-select form-select-sm" asp-items="ViewBag.MaterialCategoryId"></select>
+                    <span asp-validation-for="MaterialCategory" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row g-1 mb-1">
+                <label asp-for="EnglishName" class="col-sm-2 col-form-label-sm" for="MaterialNameEN">Material Name<span class="text-danger">*</span></label>
+                <div class="col-sm-10">
+                    <input asp-for="EnglishName" type="text" class="form-control form-control-sm" id="MaterialNameEN">
+                    <span class="text-danger">@ViewBag.ErrorMsg</span>
+                </div>
+            </div>
+
+            <div class="row g-1 mb-1">
+                <label asp-for="ChineseName" class="col-sm-2 col-form-label-sm" for="MaterialNameZH">品名名字</label>
+                <div class="col-sm-10">
+                    <input asp-for="ChineseName" type="text" class="form-control form-control-sm" id="MaterialNameZH">
+                    <span asp-validation-for="ChineseName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row g-1 mb-1">
+                <label asp-for="Availability" class="col-sm-2 col-form-label-sm" for="SelectAvailability">Availability</label>
+                <div class="col-sm-3">
+                    <select asp-for="Availability" class="form-select form-select-sm" id="SelectAvailability" aria-label="Select Availability">
+                        <option value="true" selected>Available</option>
+                        <option value="false">Unavailable</option>
+                    </select>
+                    <span asp-validation-for="Availability" class="text-danger"></span>
+                </div>
+            </div>
+
+            <hr class="my-3 form__publicAreaHr">
+
+            <div class="row g-1 mb-1">
+                <label asp-for="Picture" class="col-sm-2 col-form-label-sm" for="Picture">Picture</label>
+                <div asp-for="Picture" class="col-sm-6">
+                    <input asp-for="Picture" class="form-control form-control-sm" type="file" id="Picture">
+                    <span asp-validation-for="Picture" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row g-1 mb-1">
+        <label asp-for="VendorSupplierId" class="col-sm-2 col-form-label-sm" for="SelectVendor">Vendor</label>
+        <div class="col-sm-4">
+            <select asp-for="VendorSupplierId" class="form-select form-select-sm" id="SelectVendor" aria-label="Select Vendor" asp-items="ViewBag.VendorSupplierId"></select>
+            <span asp-validation-for="VendorSupplierId" class="text-danger"></span>
+        </div>
+        <label asp-for="ManufacturerSupplierId" class="col-sm-2 col-form-label-sm ps-md-5" for="Manufacturer">Manufacturer</label>
+        <div asp-for="ManufacturerSupplierId" class="col-sm-4">
+            <select class="form-select form-select-sm" id="SelectManufacturer" aria-label="Manufacturer" asp-items="ViewBag.ManufacturerSupplierId"></select>
+            <span asp-validation-for="ManufacturerSupplierId" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row g-1 mb-1">
+        <label asp-for="Podescription" class="col-sm-2 col-form-label-sm" for="VendorPODesc">PO Description</label>
+        <div class="col-sm-4">
+            <textarea asp-for="Podescription" class="form-control form-control-sm" id="VendorPODesc" rows="3"></textarea>
+            <span asp-validation-for="Podescription" class="text-danger"></span>
+        </div>
+
+        <label asp-for="Brand" class="col-sm-2 col-form-label-sm ps-md-5" for="ExportBrand">Brand</label>
+        <div class="col-sm-4">
+            <input asp-for="Brand" type="text" class="form-control form-control-sm" id="ExportBrand">
+            <span asp-validation-for="Brand" class="text-danger"></span>
+        </div>
+    </div>
+    <hr class="my-3">
+
+    <div class="row g-1 mb-1">
+        <label asp-for="Unit" class="col-sm-2 col-form-label-sm">Units (UOM)</label>
+        <div class="col-sm-4">
+            <input asp-for="Unit" type="text" class="form-control form-control-sm text-center" id="">
+            <span asp-validation-for="Unit" class="text-danger"></span>
+        </div>
+    </div>
+
+    @*還沒更改*@
+
+    <div class="row g-1 mb-1">
+        <label class="col-sm-2 col-form-label-sm pt-0">Available for ordering<br>at these Warehouses</label>
+        <div class="col-sm-5">
+            <div class="form-check">
+                @foreach (var item in s.WarehouseList)
+                {
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" value="@item.Id" name="MaterialArray">
+                        <span class="badge bg-secondary">Warehouse</span>@item.Name
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div class="form-group row mt-5">
+        <div class="col">
+            <a asp-action="Materials" class="btn btn-link me-3" role="button">Cancel</a>
+            <button type="submit" class="btn btn-primary" onclick="checkButton(event)">Create</button>
+        </div>
+    </div>
+
+</form>
+<script>
+    function checkButton() {
+        var Sku = document.getElementById('Sku').value;
+        var ENName = document.getElementById('MaterialNameEN').value;
+        if (document.getElementById('Sku').value === '') {
+                document.getElementById("warning").innerHTML
+                    = "*Please enter a Sku ";
+                 event.preventDefault(event);
+        }
+        if (document.getElementById('ENName').value === '') {
+            document.getElementById("warning").innerHTML
+                = "*Please enter a MaterialName ";
+            event.preventDefault(event);
+        }
+      }
+
+
+</script>
+
+
+

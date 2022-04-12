@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Warehouse>
+
+@{
+    int page = int.Parse(ViewData["nowpage"].ToString());
+    int pages = int.Parse(ViewData["pages"].ToString());
+    int range = 3;
+    int add = page + range - pages <= 0 ? 0 : page + range - pages;
+    int pbegin = page - range - add >= 1 ? page - range - add : 1;
+    int pend = pbegin + 8 <= pages ? pbegin + 8 : pages;
+}
+
+        <table class="indexTable">
+            <caption>Warehouses</caption>
+            <thead>
+                <tr>
+                    <th scope="col" width="100%">Name</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            <a asp-action="Warehouses_Details" asp-route-id="@item.Id"><strong>@Html.DisplayFor(modelItem => item.Name)</strong></a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+        <nav>
+            <ul class="pagination pagination-sm">
+                @if (page == 1)
+                {
+                    <li class="page-item disabled"><a class="page-link" disabled="disabled">Previous</a></li>
+                }
+                else
+                {
+                    string url = $"/WarehouseCreateViewModels/Warehouses?page={page - 1}";
+                    <li class="page-item active"><a class="page-link" href="@url">Previous</a></li>
+                }
+
+
+                @for (int i = pbegin; i <= pend; i++)
+                {
+                    string url = $"/WarehouseCreateViewModels/Warehouses?page={i}";
+                    if (i == page)
+                    {
+                        <li class="page-item"><a class="page-link" style="color:red" href="@url">@i</a></li>
+
+                    }
+                    else
+                    {
+                        <li class="page-item"><a class="page-link" href="@url">@i</a></li>
+                    }
+                }
+
+
+                @if (page == pages)
+                {
+                    <li class="page-item"><a class="page-link" disabled="disabled">Next</a></li>
+                }
+                else
+                {
+                    string url = $"/WarehouseCreateViewModels/Warehouses?page={page + 1}";
+                    <li class="page-item"><a class="page-link" href="@url">Next</a></li>
+                }
+            </ul>
+
+        </nav>
+
+        <div class="form-group row mt-5">
+            <div class="col">
+                <a asp-action="Warehouses_Create" class="btn btn-primary" role="button">New Warehouse</a>
+            </div>
+        </div>
+

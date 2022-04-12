@@ -1,0 +1,221 @@
+﻿@model IEnumerable<DrinkServer.Models.Order>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor _accessor
+@{
+    Layout = null;
+    LoginAuthorizeVM vm = _accessor.HttpContext.Session.GetObject<LoginAuthorizeVM>("User");
+    string[] StatusArray = { "New", "Processing", "Fulfilled", "Cancelled" };
+    int page = int.Parse(ViewData["nowpage"].ToString());
+    int pages = int.Parse(ViewData["pages"].ToString());
+    int range = 4;
+    int add = page + range - pages <= 0 ? 0 : page + range - pages;
+    int pbegin = page - range - add >= 1 ? page - range - add : 1;
+     int pend = pbegin + 8 <= pages ? pbegin + 8 : pages;
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/boder.css" rel="stylesheet" />
+    <title>Navigation</title>
+</head>
+
+<body class="bgBody">
+
+    <nav class="navbar navbar-expand-md navbar-dark mb-4 bgNav">
+        <div class="container-fluid">
+            <a class="navbar-brand" asp-action="HomePage" asp-controller="Login">SNR</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @if (vm.LookOrders_Place == true || vm.LookOrders_Proccess == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-action="Index" asp-controller="Orders">Orders</a>
+                        </li>
+                    }
+                    @if (vm.LookInventory)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Inventory
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" asp-action="Materials" asp-controller="Materials">Materials</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Suppliers" asp-controller="Suppliers">Suppliers</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookEntities)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="EntitiesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Entities
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="EntitiesDropdown">
+                                <li><a class="dropdown-item" asp-action="Stores" asp-controller="Stores">Stores</a></li>
+                                <li><a class="dropdown-item" asp-action="Warehouses" asp-controller="WarehouseCreateViewModels">Warehouses</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookReports)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="InventoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reports
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="InventoryDropdown">
+                                <li><a class="dropdown-item" href="reports/toast.html">Toast</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookSettings)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="SettingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Settings
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="SettingsDropdown">
+                                <li><a class="dropdown-item" asp-action="Profile" asp-controller="Login">My Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-action="Login" asp-controller="Login">Logout</a></li>
+                            </ul>
+                        </li>
+                    }
+                    @if (vm.LookAdmin)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="AdminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="AdminDropdown">
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="Team">Teams</a></li>
+                                <li><a class="dropdown-item" asp-action="Index" asp-controller="User">Users</a></li>
+                            </ul>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main role="main" class="container mb-5">
+
+        <h3 class="mb-3">Orders</h3>
+
+        <form asp-action="Index">
+            <div class="orderFilter">
+                <div class="ofRow">
+                    <label class="ofTD" for="ViewStatus">View</label>
+                    <div class="ofTD ofTdStatus">
+                        <select name="status" class="form-select form-select-sm" id="ViewStatus" aria-label="Select Status">
+                            <option value="0" selected>New &amp; Processing</option>
+                            <option disabled="disabled">────────────────────</option>
+                            <option value="1">New</option>
+                            <option value="2">Processing</option>
+                            <option value="3">Fulfilled</option>
+                            <option value="4">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="ofTD"><button type="submit" class="btn btn-sm btn-primary">Go</button></div>
+                </div>
+            </div>
+        </form>
+
+        <div class="ordersIndex">
+
+            <div class="oiRowTH">
+                <div class="oiTH oiThWHID">Order</div>
+                <div class="oiTH oiThWHOD">Date</div>
+                <div class="oiTH oiThWHFrom">From</div>
+                <div class="oiTH oiThWHTo">To</div>
+                <div class="oiTH oiThWHStatus">Status</div>
+            </div>
+
+            @foreach (var item in Model)
+            {
+                int fid = item.OrdersPlaceMapping.OrderFromId;
+                int tid = item.OrdersPlaceMapping.OrderToId;
+
+                <div class="oiRowTD">
+                    <div class="oiTD oiTdWHID">@item.Id</div>
+                    <div class="oiTD oiTdWHOD">
+                        <a href="/Orders/Details/@item.Id">@item.DeliveryDate</a>
+                    </div>
+                    <div class="oiTD oiTdWHFrom">
+                        @(item.OrdersPlaceMapping.OrderFromTable=="Store"?ViewBag.StoreMappings[fid]:ViewBag.WarehouseMappings[fid])
+                    </div>
+                    <div class="oiTD oiTdWHTo">@ViewBag.WarehouseMappings[tid]</div>
+
+                    <div class="oiTD oiTdWHStatus newOrderBg">@StatusArray[int.Parse(item.Status) - 1]</div>
+                </div>
+            }
+        </div>
+
+        <nav>
+            <ul class="pagination pagination-sm">
+                @if (page == 1)
+                {
+                    <li class="page-item disabled"><a class="page-link" disabled="disabled">Previous</a></li>
+                }
+                else
+                {
+                    string url = $"/Orders/Index?{(ViewBag.status == null ? "" : "status=" + ViewBag.status + "&")}page={page - 1}";
+                    <li class="page-item active"><a class="page-link" href="@url">Previous</a></li>
+                }
+
+
+                @for (int i = pbegin; i <= pend; i++)
+                {
+                    var x = ViewBag.status == null ? null : ViewBag.status;
+                    string url = $"/Orders/Index?ViewBag.status={x}&page={i}";
+                    if (i == page)
+                    {
+                        <li class="page-item"><a class="page-link" style="color:red" href="@url">@i</a></li>
+
+                    }
+                    else
+                    {
+                        <li class="page-item"><a class="page-link" href="@url" disabled="disabled">@i</a></li>
+                    }
+                }
+
+
+                @if (page == pages)
+                {
+                    <li class="page-item"><a class="page-link" disabled="disabled">Next</a></li>
+                }
+                else
+                {
+                    string url = $"/Orders/Index?{(ViewBag.status == null ? "" : "status=" + ViewBag.status + "&")}page={page + 1}";
+                    <li class="page-item"><a class="page-link" href="@url">Next</a></li>
+                }
+            </ul>
+
+        </nav>
+
+        <div class="form-group row mt-5">
+            <div class="col">
+                <a asp-action="From_To" class="btn btn-primary" role="button">New Order</a>
+            </div>
+        </div>
+
+    </main>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script>
+        $(function () {
+
+        var status = "@(ViewData["status"].ToString())";
+
+         $("#ViewStatus").val(status);
+
+    });
+    </script>
+</body>
+</html>
